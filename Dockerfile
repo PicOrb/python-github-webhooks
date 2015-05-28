@@ -2,7 +2,7 @@ FROM fedora:latest
 MAINTAINER "Laurent Rineau" <laurent.rineau@cgal.org>
 
 RUN yum -y update
-RUN yum -y install python-pip && yum clean all
+RUN yum -y install python-pip git-core docker ansible && yum clean all
 
 ADD LICENSE requirements.txt webhooks.py config.json hooks /src/
 
