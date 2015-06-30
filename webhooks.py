@@ -31,11 +31,21 @@ import requests
 from ipaddress import ip_address, ip_network
 from flask import Flask, request, abort
 
+from ansible.playbook import PlayBook
 
 application = Flask(__name__)
 
+@application.route('/fleet', methods=['GET', 'POST'])
+def fleet():
+    """
+    Execute fleet commands on remote infrastructure
+    """
+    payload = loads(request.data)
 
-@application.route('/', methods=['GET', 'POST'])
+    pb = PlayBook(playbook='../infrastructure/automation/playbooks/{0}.yml'.format(payload.playbook), extra-vars=payload.extra_vars)
+    pb.run()
+
+@application.route('/github', methods=['GET', 'POST'])
 def index():
     """
     Main WSGI application entry.
@@ -63,7 +73,7 @@ def index():
             if src_ip in ip_network(valid_ip):
                 break
         else:
-            abort(403)
+            pass#abort(403)
 
     # Enforce secret
     secret = config.get('enforce_secret', '')
@@ -105,7 +115,7 @@ def index():
     # Check permissions
     scripts = [s for s in scripts if isfile(s) and access(s, X_OK)]
     if not scripts:
-        return ''
+        return dumps({'msg': meta})
 
     # Save payload to temporal file
     _, tmpfile = mkstemp()
