@@ -1,3 +1,4 @@
 Flask
 ipaddress
 requests
+ansible<1.9
