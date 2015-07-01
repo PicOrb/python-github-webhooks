@@ -31,7 +31,14 @@ import requests
 from ipaddress import ip_address, ip_network
 from flask import Flask, request, abort
 
-from ansible.playbook import PlayBook
+from ansible import playbook, inventory, callbacks, utils
+from helpers.callbacks import CustomAggregateStats
+
+# Boilerplace callbacks for stdout/stderr and log output
+utils.VERBOSITY = 0
+playbook_cb = callbacks.PlaybookCallbacks(verbose=utils.VERBOSITY)
+stats = CustomAggregateStats()
+runner_cb = callbacks.PlaybookRunnerCallbacks(stats, verbose=utils.VERBOSITY)
 
 application = Flask(__name__)
 
@@ -39,11 +46,29 @@ application = Flask(__name__)
 def fleet():
     """
     Execute fleet commands on remote infrastructure
+        #playbook.PlayBook(
+            playbook  = book,
+            inventory = INVENTORY,
+            transport = 'local',
+            callbacks = callbacks.PlaybookCallbacks(),
+            runner_callbacks = callbacks.DefaultRunnerCallbacks(),
+            stats  = callbacks.AggregateStats(),
+        ).run()
     """
     payload = loads(request.data)
 
-    pb = PlayBook(playbook='../infrastructure/automation/playbooks/{0}.yml'.format(payload.playbook), extra-vars=payload.extra_vars)
-    pb.run()
+    pb = playbook.PlayBook(
+            playbook='./infrastructure/automation/playbooks/{0}.yml'.format(payload['playbook']),
+            inventory=inventory.Inventory("./infrastructure/automation/playbooks/inventory/ec2.py"),
+            extra_vars=payload['extra_vars'],
+            #remote_user='core',
+            #private_key_file='./automation/keys/id_rsa',
+            transport = 'smart',
+            callbacks = playbook_cb,
+            runner_callbacks = runner_cb,
+            stats  = stats,
+    )
+    return dumps(pb.run(), sort_keys=True, indent=4)
 
 @application.route('/github', methods=['GET', 'POST'])
 def index():
