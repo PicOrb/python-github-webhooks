@@ -42,7 +42,7 @@ runner_cb = callbacks.PlaybookRunnerCallbacks(stats, verbose=utils.VERBOSITY)
 
 application = Flask(__name__)
 
-@application.route('/fleet', methods=['GET', 'POST'])
+@application.route('/ansible', methods=['GET', 'POST'])
 def fleet():
     """
     Execute fleet commands on remote infrastructure
