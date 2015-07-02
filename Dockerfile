@@ -1,14 +1,18 @@
-FROM fedora:latest
+FROM picorb/python
 MAINTAINER "Laurent Rineau" <laurent.rineau@cgal.org>
 
-RUN yum -y update
-RUN yum -y install python-pip git-core docker ansible && yum clean all
+RUN apt-get update --fix-missing
+RUN apt-get install -y ansible
+
+# Cleanup
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN apt-get autoremove -y
 
 ADD LICENSE requirements.txt webhooks.py config.json hooks /src/
 
-RUN cd /src; pip install -r requirements.txt
+WORKDIR /src
+RUN pip install -r requirements.txt
 
 EXPOSE 5000
 
-WORKDIR /src
-CMD ["python", "/src/webhooks.py"]
+CMD ["sh", "run.sh"]
