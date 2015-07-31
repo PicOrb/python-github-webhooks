@@ -55,7 +55,7 @@ def fleet():
             stats  = callbacks.AggregateStats(),
         ).run()
     """
-    request_data = loads(request.data)
+    request_data = request.form.to_dict() #loads(request.data)
 
     def retrieve_vars(text, var_assign=':', var_split=','):
         result = {}
