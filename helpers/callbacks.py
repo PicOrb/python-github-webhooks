@@ -19,7 +19,7 @@ class CustomAggregateStats(AggregateStats):
         for (host, value) in runner_results.get('contacted', {}).iteritems():
             if not host in self.results:
                 self.results[host] = []
-            if 'invocation' in value and value['invocation']['module_name'] == 'debug':
+            if 'invocation' in value and value['invocation']['module_name'] == 'debug' and 'var' in value:
                     self.results[host].append(value['var'])
 
     def summarize(self, host):
@@ -29,6 +29,7 @@ class CustomAggregateStats(AggregateStats):
         summarized_info = super(CustomAggregateStats, self).summarize(host)
 
         # Adding the info I need
-        summarized_info['result'] = self.results[host]
+        if host in self.results:
+            summarized_info['result'] = self.results[host]
 
         return summarized_info

@@ -55,12 +55,19 @@ def fleet():
             stats  = callbacks.AggregateStats(),
         ).run()
     """
-    payload = loads(request.data)
+    request_data = loads(request.data)
 
+    def retrieve_vars(text, var_assign=':', var_split=','):
+        result = {}
+        for var in text.split(var_split):
+            var_parts = var.split(var_assign)
+            result[var_parts[0].strip()] = var_parts[1].strip()
+        return result
+    payload = retrieve_vars(request_data['text'])
     pb = playbook.PlayBook(
-            playbook='./infrastructure/automation/playbooks/{0}.yml'.format(payload['playbook']),
-            inventory=inventory.Inventory("./infrastructure/automation/playbooks/inventory/ec2.py"),
-            extra_vars=payload['extra_vars'],
+            playbook='/src/infrastructure/automation/playbooks/{0}.yml'.format(payload['playbook']),
+            inventory=inventory.Inventory("/etc/ansible/ec2.py"),
+            extra_vars=retrieve_vars(payload['extra_vars'], '=', ' '),
             #remote_user='core',
             #private_key_file='./automation/keys/id_rsa',
             transport = 'smart',
