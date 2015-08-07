@@ -40,6 +40,9 @@ ENV EC2_INI_PATH /etc/ansible/ec2.ini
 ENV ANSIBLE_INVENTORY /etc/ansible/ec2.py
 ENV ANSIBLE_CONFIG /etc/ansible/ansible.cfg
 
+RUN mkdir /root/.aws
+VOLUME ['/root/.aws']
+
 EXPOSE 5000
 
 CMD ["sh", "run.sh"]
