@@ -4,7 +4,7 @@ MAINTAINER "Laurent Rineau" <laurent.rineau@cgal.org>
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 RUN add-apt-repository ppa:ansible/ansible
 RUN apt-get update --fix-missing
-RUN apt-get install -y ansible
+RUN apt-get install -y ansible rsync
 RUN ansible-galaxy install defunctzombie.coreos-bootstrap
 
 # Cleanup
