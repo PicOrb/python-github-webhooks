@@ -65,7 +65,7 @@ def fleet():
         return result
     payload = retrieve_vars(request_data['text'])
     pb = playbook.PlayBook(
-            playbook='/src/infrastructure/automation/playbooks/{0}.yml'.format(payload['playbook']),
+            playbook='/src/playbooks/{0}.yml'.format(payload['playbook']),
             inventory=inventory.Inventory("/etc/ansible/ec2.py"),
             extra_vars=retrieve_vars(payload['extra_vars'], '=', ' '),
             #remote_user='core',
