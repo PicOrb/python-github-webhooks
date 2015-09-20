@@ -4,7 +4,7 @@ MAINTAINER "Laurent Rineau" <laurent.rineau@cgal.org>
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 RUN add-apt-repository ppa:ansible/ansible
 RUN apt-get update --fix-missing
-RUN apt-get install -y ansible rsync
+RUN apt-get install -y ansible rsync redis-server
 RUN ansible-galaxy install defunctzombie.coreos-bootstrap
 
 # Cleanup
@@ -15,6 +15,7 @@ ADD https://raw.githubusercontent.com/ansible/ansible/release1.8.2/plugins/inven
 ADD https://raw.githubusercontent.com/ansible/ansible/release1.8.2/plugins/inventory/ec2.ini /etc/ansible/
 RUN chmod u+x /etc/ansible/ec2.py
 
+RUN service redis-server start
 RUN virtualenv /env
 RUN source /env/bin/activate
 ADD requirements.txt /src/
