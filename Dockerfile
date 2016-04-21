@@ -11,8 +11,8 @@ RUN ansible-galaxy install defunctzombie.coreos-bootstrap
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 RUN apt-get autoremove -y
 
-ADD https://raw.githubusercontent.com/ansible/ansible/release1.8.2/plugins/inventory/ec2.py /etc/ansible/
-ADD https://raw.githubusercontent.com/ansible/ansible/release1.8.2/plugins/inventory/ec2.ini /etc/ansible/
+ADD https://raw.githubusercontent.com/ansible/ansible/stable-2.0.0.1/contrib/inventory/ec2.py /etc/ansible/
+ADD https://raw.githubusercontent.com/ansible/ansible/stable-2.0.0.1/contrib/inventory/ec2.ini /etc/ansible/
 RUN chmod u+x /etc/ansible/ec2.py
 
 RUN service redis-server start
